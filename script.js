@@ -49,9 +49,27 @@ var alienBulletY;
 	background(199,203,209);
 	gameScreen = select('#game-screen');
 	canvas.parent("game-screen");
+	shipX=250;
+	shipY=350;
+	shipSpeed=10;
+	
+	
  }
 
+  function drawShip(){
+ellipse(shipX,shipY,80,80);
 
+if(keyIsDown(LEFT_ARROW)&&shipX>40){
+	shipX-=shipSpeed;
+  }
+  else if (keyIsDown(RIGHT_ARROW)&&shipX<460){
+  	shipX+=shipSpeed;
+  }
+}
+function draw(){
+	background(199,203,209);
+	drawShip();
+}
 /*
  * gameOver()
  * This function stops the game from running and shows an alert telling the
