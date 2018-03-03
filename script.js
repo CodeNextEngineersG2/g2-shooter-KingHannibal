@@ -1,5 +1,7 @@
 // UI Variables
 var canvas;
+var canvasWidth;
+var canvasHeight;
 var gameScreen;
 var scoreDisplay;
 
@@ -39,6 +41,15 @@ var alienBulletY;
  * select(), and adds event listeners to those elements. Sets initial values of
  * variables by calling resetGame().
  */
+  function setup(){
+  	canvasWidth=500;
+  	canvasHeight=400;
+	canvas=createCanvas(canvasWidth,canvasHeight);
+
+	background(199,203,209);
+	gameScreen = select('#game-screen');
+	canvas.parent("game-screen");
+ }
 
 
 /*
