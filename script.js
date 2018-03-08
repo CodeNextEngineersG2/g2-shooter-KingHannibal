@@ -58,6 +58,10 @@ var alienBulletY;
 	bulletSpeed=10;
 	bulletDiameter=20;
 	shipShooting= false;
+	alienX=25;
+	alienY=25;
+	alienDiameter=50;
+	alienVelocity=10;
 	
  }
 
@@ -78,7 +82,7 @@ function keyPressed(){
 		bulletY=shipY;
    		//bulletY-=bulletSpeed;
    		shipShooting=true;
-   		console.log("hi");
+   		
 	}
 	
 
@@ -90,9 +94,9 @@ function draw(){
 	
 	if(shipShooting==true){
 		drawBullet();
-		console.log("shoot");
+		
 	}
-	console.log(shipShooting);
+	drawAlien();
 }
 
 function drawBullet(){
@@ -106,7 +110,13 @@ function drawBullet(){
 	 }
 
 }
-
+ function drawAlien(){
+ 	ellipse(alienX,alienY,alienDiameter,alienDiameter)
+ 	alienX+=alienVelocity;
+ 	if(alienX>=width-alienDiameter/2||alienX<=25){
+ 		alienVelocity*=-1;
+ 	}
+ }
 
 	
 /*
