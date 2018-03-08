@@ -22,7 +22,7 @@ var shipColor;
 var bulletDiameter;
 var bulletX;
 var bulletY;
-
+var bulletSpeed;
 // Alien Variables
 var alienDiameter;
 var alienX;
@@ -52,24 +52,63 @@ var alienBulletY;
 	shipX=250;
 	shipY=350;
 	shipSpeed=10;
-	
+	shipDiameter=80;
+	bulletX=shipX;
+	bulletY=shipY;
+	bulletSpeed=10;
+	bulletDiameter=20;
+	shipShooting= false;
 	
  }
 
-  function drawShip(){
-ellipse(shipX,shipY,80,80);
+function drawShip(){
+	ellipse(shipX,shipY,shipDiameter,shipDiameter);
 
-if(keyIsDown(LEFT_ARROW)&&shipX>40){
-	shipX-=shipSpeed;
-  }
-  else if (keyIsDown(RIGHT_ARROW)&&shipX<460){
-  	shipX+=shipSpeed;
-  }
+	if(keyIsDown(LEFT_ARROW)&&shipX>40){
+		shipX-=shipSpeed;
+	}
+	else if (keyIsDown(RIGHT_ARROW)&&shipX<460){
+	  	shipX+=shipSpeed;
+	}
 }
+
+function keyPressed(){
+	if(keyCode===32 && shipShooting==false){
+		bulletX=shipX;
+		bulletY=shipY;
+   		//bulletY-=bulletSpeed;
+   		shipShooting=true;
+   		console.log("hi");
+	}
+	
+
+}
+
 function draw(){
 	background(199,203,209);
 	drawShip();
+	
+	if(shipShooting==true){
+		drawBullet();
+		console.log("shoot");
+	}
+	console.log(shipShooting);
 }
+
+function drawBullet(){
+	
+	 if(bulletY>0){
+	 	ellipse(bulletX,bulletY,bulletDiameter,bulletDiameter);
+		bulletY-=bulletSpeed;
+	 }
+	 else{
+	 	shipShooting = false;
+	 }
+
+}
+
+
+	
 /*
  * gameOver()
  * This function stops the game from running and shows an alert telling the
