@@ -23,16 +23,19 @@ var bulletDiameter;
 var bulletX;
 var bulletY;
 var bulletSpeed;
+var BulletColor
 // Alien Variables
 var alienDiameter;
 var alienX;
 var alienY;
 var alienVelocity;
+var alienColor;
 
 // Alien Bullet Variables
 var alienBulletDiameter;
 var alienBulletX;
 var alienBulletY;
+var alienBulletColor;
 
 
 /*
@@ -46,7 +49,7 @@ var alienBulletY;
   	canvasHeight=400;
 	canvas=createCanvas(canvasWidth,canvasHeight);
 
-	background(199,203,209);
+	background(0);
 	gameScreen = select('#game-screen');
 	canvas.parent("game-screen");
 	shipX=250;
@@ -62,62 +65,25 @@ var alienBulletY;
 	alienY=25;
 	alienDiameter=50;
 	alienVelocity=10;
-	
+	alienBulletDiameter=20;
+	alienShooting= false;
+	alienBulletX= alienX;
+	alienBulletY=alienY;
+	shipColor= color(129,23,194);
+	alienColor=color(60,130,33);
+	BulletColor=color(231,31,245);
+	alienBulletColor=color(31,245,245);
  }
 
-function drawShip(){
-	ellipse(shipX,shipY,shipDiameter,shipDiameter);
 
-	if(keyIsDown(LEFT_ARROW)&&shipX>40){
-		shipX-=shipSpeed;
-	}
-	else if (keyIsDown(RIGHT_ARROW)&&shipX<460){
-	  	shipX+=shipSpeed;
-	}
-}
 
-function keyPressed(){
-	if(keyCode===32 && shipShooting==false){
-		bulletX=shipX;
-		bulletY=shipY;
-   		//bulletY-=bulletSpeed;
-   		shipShooting=true;
-   		
-	}
-	
 
-}
 
-function draw(){
-	background(199,203,209);
-	drawShip();
-	
-	if(shipShooting==true){
-		drawBullet();
-		
-	}
-	drawAlien();
-}
 
-function drawBullet(){
-	
-	 if(bulletY>0){
-	 	ellipse(bulletX,bulletY,bulletDiameter,bulletDiameter);
-		bulletY-=bulletSpeed;
-	 }
-	 else{
-	 	shipShooting = false;
-	 }
 
-}
- function drawAlien(){
- 	ellipse(alienX,alienY,alienDiameter,alienDiameter)
- 	alienX+=alienVelocity;
- 	if(alienX>=width-alienDiameter/2||alienX<=25){
- 		alienVelocity*=-1;
- 	}
- }
 
+ 
+ 
 	
 /*
  * gameOver()
@@ -139,14 +105,38 @@ function drawBullet(){
  * This function animates the ship, alien, and both kinds of bullets, but only
  * if the game is running.
  */
+function draw(){
+	background(0);
+	drawShip();
+	
+	if(shipShooting==true){
+		drawBullet();
+		
+	}
+	drawAlien();
 
+	if(alienShooting==true){
+		drawalienBullet();
+	}
+}
 
 /*
  * drawShip()
  * This function draws the player's ship. It also controls the ship's
  * x value by checking if the player is holding down the left or right keys.
  */
+function drawShip(){
+	fill(shipColor);
+	ellipse(shipX,shipY,shipDiameter,shipDiameter);
 
+	if(keyIsDown(LEFT_ARROW)&&shipX>40){
+		shipX-=shipSpeed;
+	}
+	else if (keyIsDown(RIGHT_ARROW)&&shipX<460){
+	  	shipX+=shipSpeed;
+	}
+
+}
 
 /*
  * keyPressed()
@@ -156,7 +146,17 @@ function drawBullet(){
  * ship. Then it sets the "shipShooting" variable to "true", indicating a ship
  * bullet is currently being fired.
  */
+function keyPressed(){
+	if(keyCode===32 && shipShooting==false){
+		bulletX=shipX;
+		bulletY=shipY;
+   		//bulletY-=bulletSpeed;
+   		shipShooting=true;
+   		
+	}
+	
 
+}
 
 /*
  * drawBullet()
@@ -165,21 +165,55 @@ function drawBullet(){
  * and the player earns a point. The alien aslo becomes faster (i.e., harder
  * to hit) each time it is hit by a bullet.
  */
+function drawBullet(){
+	fill(BulletColor);
+	 if(bulletY>0){
+	 	ellipse(bulletX,bulletY,bulletDiameter,bulletDiameter);
+		bulletY-=bulletSpeed;
+	 }
+	 else{
+	 	shipShooting = false;
+	 }
 
+}
 
 /*
  * drawAlien()
  * This function draws an alien. It also checks to see if the alien has touched
  * the player's ship. If it has, the function calls gameOver().
  */
-
+function drawAlien(){
+	 fill(alienColor);
+ 	ellipse(alienX,alienY,alienDiameter,alienDiameter)
+ 	alienX+=alienVelocity;
+ 	if(alienX>=width-alienDiameter/2||alienX<=25){
+ 		alienVelocity*=-1;
+ 	}
+ 	if(random(4)<1 && !alienShooting){
+		alienBulletX=alienX
+		alienBulletY=alienY;
+		alienShooting=true;
+	}
+ }
 
 /*
  * drawAlienBullet()
  * This function behaves much like drawBullet(), only it fires from the alien
  * and not the player's ship. If the bullet hits the player, it's game over.
  */
+function drawalienBullet (){
+	fill(alienBulletColor);
+	if(alienBulletY<canvasHeight){
+		ellipse(alienBulletX,alienBulletY,alienBulletDiameter,alienBulletDiameter);
+		alienBulletY+=10;
+	}
+	else{
+		alienShooting=false;
+	}
 
+	
+
+ }
 
 /*
  * resetAlien()
