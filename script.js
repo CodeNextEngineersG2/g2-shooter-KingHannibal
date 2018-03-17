@@ -52,6 +52,41 @@ var alienBulletColor;
 	background(0);
 	gameScreen = select('#game-screen');
 	canvas.parent("game-screen");
+	scoreDisplay = select ("#score-display");
+	resetGame();
+ }
+
+
+
+
+
+
+
+
+ 
+ 
+	
+/*
+ * gameOver()
+ * This function stops the game from running and shows an alert telling the
+ * player what their final score is. Finally it resets the game by calling
+ * resetGame()
+ */
+function gameOver(){
+	gameRunning=false;
+	alert("gameOver");
+	resetGame();
+
+	}
+
+
+
+/*
+ * resetGame()
+ * This function "resets the game" by initializing ship, alien, and game
+ * variables.
+ */
+function resetGame(){
 	shipX=250;
 	shipY=350;
 	shipSpeed=10;
@@ -73,32 +108,10 @@ var alienBulletColor;
 	alienColor=color(60,130,33);
 	BulletColor=color(231,31,245);
 	alienBulletColor=color(31,245,245);
- }
-
-
-
-
-
-
-
-
- 
- 
-	
-/*
- * gameOver()
- * This function stops the game from running and shows an alert telling the
- * player what their final score is. Finally it resets the game by calling
- * resetGame()
- */
-
-
-/*
- * resetGame()
- * This function "resets the game" by initializing ship, alien, and game
- * variables.
- */
-
+	score=0; 
+	scoreDisplay.html(score);
+	gameRunning= true;
+}
 
 /*
  * draw()
@@ -106,18 +119,20 @@ var alienBulletColor;
  * if the game is running.
  */
 function draw(){
+	if(gameRunning==true){
 	background(0);
 	drawShip();
 	
 	if(shipShooting==true){
 		drawBullet();
-		
 	}
-	drawAlien();
+	drawAlien(); 
 
 	if(alienShooting==true){
-		drawalienBullet();
+		drawAlienBullet();
 	}
+}
+	
 }
 
 /*
@@ -147,7 +162,7 @@ function drawShip(){
  * bullet is currently being fired.
  */
 function keyPressed(){
-	if(keyCode===32 && shipShooting==false){
+	if(keyCode===32 && shipShooting==false&&gameRunning){
 		bulletX=shipX;
 		bulletY=shipY;
    		//bulletY-=bulletSpeed;
@@ -167,14 +182,23 @@ function keyPressed(){
  */
 function drawBullet(){
 	fill(BulletColor);
-	 if(bulletY>0){
+	var hitAlien= checkCollision(alienX,alienY,alienDiameter,bulletX,bulletY,bulletDiameter);
+	 if(bulletY>0&&!hitAlien){
 	 	ellipse(bulletX,bulletY,bulletDiameter,bulletDiameter);
 		bulletY-=bulletSpeed;
 	 }
+	 else if(hitAlien){
+	 	resetAlien();
+	 	alienVelocity++;
+	 	shipShooting=false;
+	 	score++;
+	 	scoreDisplay.html(score);
+	 }
+
 	 else{
 	 	shipShooting = false;
 	 }
-
+  	
 }
 
 /*
@@ -201,11 +225,16 @@ function drawAlien(){
  * This function behaves much like drawBullet(), only it fires from the alien
  * and not the player's ship. If the bullet hits the player, it's game over.
  */
-function drawalienBullet (){
+function drawAlienBullet (){
+	var hitShip = checkCollision(alienBulletX,alienBulletY,alienBulletDiameter,shipX,shipY,shipDiameter);
+		
 	fill(alienBulletColor);
-	if(alienBulletY<canvasHeight){
+	if(alienBulletY<canvasHeight && hitShip == false ){
 		ellipse(alienBulletX,alienBulletY,alienBulletDiameter,alienBulletDiameter);
 		alienBulletY+=10;
+	}
+	else if(hitShip== true){
+		gameOver();
 	}
 	else{
 		alienShooting=false;
@@ -222,7 +251,11 @@ function drawalienBullet (){
  * velocity was negative when it died, it becomes positive upon reset, making
  * it always start by moving to the right).
  */
-
+function resetAlien(){
+	alienX=alienDiameter/2;
+	alienY=alienDiameter/2;
+  alienVelocity=abs(alienVelocity);
+}
 
 /*
  * checkCollision(aX, aY, aD, bX, bY, bD)
@@ -232,3 +265,21 @@ function drawalienBullet (){
  * Circles are considered touching if
  * (distance <= (circle1Diameter + circle2Diameter) / 2)
  */
+function checkCollision(aX, aY,aD,bX,bY,bD){
+ var distance= dist(aX,aY,bX,bY);
+
+	 if( distance<= aD/2 + bD/2){
+	 	return true;
+	}
+	else{
+		return false;
+	}
+
+
+}
+
+
+
+
+
+
