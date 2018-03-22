@@ -37,6 +37,15 @@ var alienBulletX;
 var alienBulletY;
 var alienBulletColor;
 
+var img;
+var healthBar;
+var healthBarWidth;
+var healthRate;
+
+function preLoad(){
+	img=loadImage("king.jpg");
+}
+
 
 /*
  * setup()
@@ -48,16 +57,21 @@ var alienBulletColor;
   	canvasWidth=500;
   	canvasHeight=400;
 	canvas=createCanvas(canvasWidth,canvasHeight);
-
-	background(0);
+		
+	background(100);
 	gameScreen = select('#game-screen');
 	canvas.parent("game-screen");
 	scoreDisplay = select ("#score-display");
 	resetGame();
+	healthRate=10;
+	
  }
 
 
-
+function healthBar (){
+	fill(201,122,47);
+	rect(alienX,5,healthBarWidth,5);
+}
 
 
 
@@ -111,6 +125,8 @@ function resetGame(){
 	score=0; 
 	scoreDisplay.html(score);
 	gameRunning= true;
+	healthBarWidth=50;
+	
 }
 
 /*
@@ -120,19 +136,24 @@ function resetGame(){
  */
 function draw(){
 	if(gameRunning==true){
-	background(0);
+	background(10);
 	drawShip();
 	
-	if(shipShooting==true){
+		if(shipShooting==true){
 		drawBullet();
-	}
-	drawAlien(); 
+		}
+		drawAlien(); 
 
-	if(alienShooting==true){
-		drawAlienBullet();
+			if(alienShooting==true){
+				drawAlienBullet();
+			}
+
 	}
-}
-	
+
+	if (healthBarWidth<=0){
+		alert("good job! you have completed your first level");
+		resetAlien();
+	}
 }
 
 /*
@@ -188,11 +209,13 @@ function drawBullet(){
 		bulletY-=bulletSpeed;
 	 }
 	 else if(hitAlien){
-	 	resetAlien();
-	 	alienVelocity++;
+	 	
+	 	//alienVelocity++;
 	 	shipShooting=false;
 	 	score++;
 	 	scoreDisplay.html(score);
+	 	healthBarWidth-=healthRate;
+
 	 }
 
 	 else{
@@ -217,7 +240,9 @@ function drawAlien(){
 		alienBulletX=alienX
 		alienBulletY=alienY;
 		alienShooting=true;
-	}
+	} 
+	healthBar();
+	
  }
 
 /*

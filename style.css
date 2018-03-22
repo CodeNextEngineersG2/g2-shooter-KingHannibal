@@ -8,6 +8,8 @@ html {
 
 body {
   text-align: center;
+  background-size: 90%;
+  background-repeat:  no-repeat;
 }
 
 /* Create your styles below */
